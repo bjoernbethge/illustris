@@ -24,10 +24,10 @@ sphinx:
 # Optionally declare the Python requirements required to build your docs
 python:
   install:
-    - method: pip
+    - method: uv
       path: .
       extra_requirements:
-        - docs
+        - dev
 
 # Set the formats you want to build. Possible values: htmlzip, pdf, epub
 formats:
