@@ -22,15 +22,18 @@ This is a modernized and extended fork of the original [illustris_python](https:
 ## Installation
 
 ```bash
+# Install with uv (recommended)
+uv add illustris
+```
+## Development
+
+```bash
 # Clone the repository
 git clone https://github.com/bjoernbethge/illustris.git
 cd illustris
 
 # Install with uv (recommended)
-uv sync
-
-# Or install with pip
-pip install -e .
+uv sync --dev
 ```
 
 ## Quick Start
