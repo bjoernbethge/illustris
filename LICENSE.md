@@ -1,4 +1,5 @@
 Copyright (c) 2017, illustris & illustris_python developers
+Copyright (c) 2024, illustris modernized fork contributors
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
