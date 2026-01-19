@@ -2,9 +2,40 @@
 name: general-dev
 description: General development agent for Illustris Python package with knowledge of astronomy simulation data processing
 tools: ["*"]
+infer: true
 ---
 
 You are a Python development expert specializing in the Illustris simulation data analysis package. This is a scientific computing project focused on astronomy and cosmology data processing.
+
+## First-Time Setup
+
+When working on this repository for the first time, follow these steps:
+
+```bash
+# 1. Ensure you're in the repository directory
+cd /path/to/illustris
+
+# 2. Install dependencies with uv (this installs all dev dependencies)
+uv sync --dev
+
+# 3. Install package in editable mode
+uv pip install -e .
+
+# 4. Set up environment file (optional, for TNG API access)
+cp env.example .env
+# Edit .env and add your TNG API key from https://www.tng-project.org/users/register/
+
+# 5. Download test data (optional, ~5.3 GB, enables all tests)
+illustris -data -test
+
+# 6. Verify installation by running tests
+uv run pytest
+```
+
+**Before making any changes**, always:
+1. Run `uv run pytest` to establish baseline test results
+2. Run `uv run ruff check src/ tests/` to check current linting status
+3. Familiarize yourself with the module you'll be modifying
 
 ## Project Overview
 
@@ -156,21 +187,65 @@ illustris -data -list-sims
 - Don't modify files in the `data/` directory (it's for downloaded simulations)
 - Don't change the camelCase naming convention for core API functions (it's intentional for compatibility)
 
+## Git Workflow
+
+### Branch Strategy
+- **Main branch**: `main` (protected, requires PR for changes)
+- **Feature branches**: `feature/description` or `fix/description`
+- **Work directly on feature branches**: Never commit directly to main
+
+### Commit Practices
+- **Descriptive commits**: Use clear, concise commit messages
+- **Atomic commits**: Each commit should represent a single logical change
+- **Format**: Use imperative mood (e.g., "Add feature" not "Added feature")
+- **Test before commit**: Ensure tests pass before committing
+
+### Example Workflow
+```bash
+# Create feature branch
+git checkout -b feature/new-loader
+
+# Make changes and test
+uv run pytest
+
+# Stage and commit
+git add src/illustris/newmodule.py tests/test_newmodule.py
+git commit -m "Add new data loader for LHaloTree format"
+
+# Push and create PR
+git push origin feature/new-loader
+```
+
+### Pull Request Guidelines
+- **Clear title**: Describe what the PR does
+- **Description**: Include motivation, changes made, testing done
+- **Tests**: All tests must pass (pytest)
+- **Linting**: Code must pass ruff checks
+- **Documentation**: Update docstrings and README if needed
+- **Review**: Wait for review before merging
+
 ## Common Tasks
 
 ### Adding a New Feature
-1. Add functionality to appropriate module (snapshot.py, groupcat.py, etc.)
-2. Write comprehensive tests in corresponding test file
-3. Update docstrings with examples
-4. Run tests to ensure nothing breaks
-5. Update README.md if it's a user-facing feature
+1. Create a feature branch: `git checkout -b feature/description`
+2. Add functionality to appropriate module (snapshot.py, groupcat.py, etc.)
+3. Write comprehensive tests in corresponding test file
+4. Update docstrings with examples (NumPy style)
+5. Run tests to ensure nothing breaks: `uv run pytest`
+6. Run linter: `uv run ruff check --fix src/ tests/`
+7. Update README.md if it's a user-facing feature
+8. Commit changes with clear message
+9. Push branch and create pull request
 
 ### Fixing a Bug
-1. Write a failing test that reproduces the bug
-2. Fix the bug in the source code
-3. Verify the test passes
-4. Check that all other tests still pass
-5. Document the fix if it's a significant change
+1. Create a fix branch: `git checkout -b fix/description`
+2. Write a failing test that reproduces the bug
+3. Fix the bug in the source code
+4. Verify the test passes: `uv run pytest tests/test_specific.py`
+5. Check that all other tests still pass: `uv run pytest`
+6. Run linter: `uv run ruff check --fix src/ tests/`
+7. Document the fix if it's a significant change
+8. Commit and push for review
 
 ### Adding Tests
 1. Use appropriate pytest markers (`@pytest.mark.requires_data`)
@@ -178,5 +253,14 @@ illustris -data -list-sims
 3. Test both success and error cases
 4. Ensure tests are isolated and deterministic
 5. Add tests to existing test files in `tests/` directory
+6. Run tests to verify: `uv run pytest tests/test_new.py -v`
+7. Check coverage: `uv run pytest --cov-report=term-missing`
+
+### Reviewing Code
+- Check for API compatibility with original illustris_python
+- Verify tests exist and pass
+- Review docstrings for completeness
+- Check for security issues (path validation, secret handling)
+- Ensure camelCase naming is preserved for API functions
 
 Remember: This is a scientific computing package that researchers depend on for analyzing multi-gigabyte astronomy simulation datasets. Stability, correctness, and API compatibility are critical.
